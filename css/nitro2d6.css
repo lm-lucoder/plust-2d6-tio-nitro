@@ -20,6 +20,7 @@
   --color-border-light-primary: var(--nitro-line);
   --color-border-light-secondary: var(--nitro-line);
   --color-shadow-primary: #a0462e40;
+  /* Foundry V14 puts Font Awesome classes directly on these buttons. */
   /* Dialogs share the sheets' hierarchy without inheriting their fixed-height layout. */
   /* V14 DialogV2 nests two standard-form elements. Keep its inherited flex sizing
      out of the field grid and reserve a non-scrolling area for the actions. */
@@ -42,6 +43,15 @@
 .nitro2d6.application .window-header .window-title {
   color: inherit;
   font-size: 13px;
+}
+.nitro2d6.application .window-header button.header-control.fa-solid {
+  font-family: var(--font-awesome);
+  font-weight: var(--fa-style, 900);
+  color: #f7f0e5;
+  --button-text-color: #f7f0e5;
+  --button-hover-text-color: #fff;
+  --button-background-color: transparent;
+  --button-hover-background-color: #ffffff20;
 }
 .nitro2d6.application .window-content {
   padding: 0;
