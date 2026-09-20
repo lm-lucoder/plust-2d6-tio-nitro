@@ -1,0 +1,7 @@
+{
+  "TYPES": {
+    "Actor": {"character": "Personagem", "npc": "NPC / Criatura"},
+    "Item": {"skill": "Perícia", "weapon": "Arma", "armor": "Armadura", "equipment": "Equipamento", "advantage": "Vantagem", "disadvantage": "Desvantagem", "power": "Poder / Magia"}
+  },
+  "NITRO2D6": {"Title": "+2d6 • Nitro", "Sheet": "Ficha +2d6"}
+}

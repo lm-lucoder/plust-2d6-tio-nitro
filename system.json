@@ -1,0 +1,52 @@
+{
+  "id": "nitro2d6",
+  "title": "+2d6 • Nitro",
+  "description": "Fichas e rolagens para o sistema +2d6 de Newton Rocha (Tio Nitro).",
+  "authors": [
+    {
+      "name": "Asacolips",
+      "discord": "asacolips"
+    },
+    {
+      "name": "Lee Talman",
+      "discord": ".pizzaWizard"
+    }
+  ],
+  "license": "LICENSE.txt",
+  "readme": "README.md",
+  "changelog": "CHANGELOG.md",
+  "media": [
+    {
+      "type": "setup",
+      "url": "systems/nitro2d6/assets/anvil-impact.png",
+      "thumbnail": "systems/nitro2d6/assets/anvil-impact.png"
+    }
+  ],
+  "version": "2.0.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14.367"
+  },
+  "esmodules": ["module/nitro2d6.mjs"],
+  "styles": ["css/nitro2d6.css"],
+  "languages": [
+    {"lang": "en", "name": "English", "path": "lang/en.json"},
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "packs": [],
+  "packFolders": [],
+  "socket": false,
+  "background": "systems/nitro2d6/assets/anvil-impact.png",
+  "gridDistance": 1,
+  "gridUnits": "m",
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "energy",
+  "documentTypes": {
+    "Actor": {"character": {}, "npc": {}},
+    "Item": {"skill": {}, "weapon": {}, "armor": {}, "equipment": {}, "advantage": {}, "disadvantage": {}, "power": {}}
+  }
+}

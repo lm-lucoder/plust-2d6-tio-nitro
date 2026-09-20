@@ -1,0 +1,9 @@
+<section class="roll-heading"><span class="eyebrow">{{actorName}} · +2d6</span><h3>{{label}}</h3><p>Role o dano depois de resolver o ataque.</p></section>
+<div class="roll-fields">
+  <div class="form-group full-width"><label>Fórmula de dano</label><input type="text" name="formula" value="{{formula}}" required><p class="hint">Exemplos: 1d6+2 ou @strengthDamage+1 para usar o dano de Força.</p></div>
+  <div class="form-group"><label>Modificador de dano</label><input type="number" name="extra" value="0" step="1"></div>
+  <div class="form-group"><label>RD aplicável do alvo</label><input type="number" name="reduction" value="{{reduction}}" min="0" step="1">{{#if targetName}}<p class="hint">Preenchida a partir de {{targetName}}. Ajuste para a proteção adequada.</p>{{else}}<p class="hint">Considere a proteção adequada ao golpe.</p>{{/if}}</div>
+  <div class="form-group"><label>Tipo de dano</label><input type="text" name="damageType" value="{{damageType}}" placeholder="Letal, não letal, fogo..."></div>
+  <div class="form-group"><label>Visibilidade</label><select name="messageMode">{{#each modes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+</div>
+<fieldset class="roll-options"><legend>Decisão do mestre</legend><label><input type="checkbox" name="doubleDamage"> Dobrar dano antes da RD</label><p class="hint">Um acerto crítico pode dobrar o dano; o efeito é decidido pelo mestre.</p></fieldset>

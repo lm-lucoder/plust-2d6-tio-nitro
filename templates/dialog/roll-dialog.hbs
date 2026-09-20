@@ -1,0 +1,40 @@
+<section class="roll-heading">
+  <span class="eyebrow">{{actorName}} · +2d6</span>
+  <h3>{{label}}</h3>
+  {{#if isDeath}}<p>Role 2d6: 6 ou mais mantém o personagem vivo; 12 estabiliza. Três fracassos causam morte.</p>{{else}}<p>Escolha as condições da cena e confirme sua rolagem.</p>{{/if}}
+</section>
+{{#if isDeath}}
+  <div class="roll-options">
+    <label><input type="checkbox" name="recordDeath" checked> Registrar resultado na ficha ({{failures}}/3 fracassos)</label>
+  </div>
+{{else}}
+  <div class="roll-fields">
+    {{#if regularTest}}
+      <div class="form-group"><label>Atributo</label><select name="attribute">{{#each attributes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+      {{#if showSkills}}<div class="form-group"><label>Perícia relacionada</label><select name="skill"><option value="">Sem perícia</option>{{#each skills}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>{{/if}}
+      <div class="form-group"><label>{{rankLabel}} · valor</label><input type="number" name="rank" value="{{rank}}" step="1"></div>
+      <div class="form-group"><label>Tipo de teste</label><select name="mode"><option value="normal">Normal · contra CD</option><option value="opposed">Oposto · contra outro total</option></select></div>
+      <div class="form-group" data-mode="normal"><label>Classe de dificuldade</label><input type="number" name="difficulty" value="10" step="1"><p class="hint">Fácil 8 · Normal 10 · Difícil 14. Tarefas sobre-humanas: acrescente 10 à CD.</p></div>
+      <div class="form-group" data-mode="opposed" hidden><label>Resultado do oponente</label><input type="number" name="opponent" placeholder="Deixe vazio para comparar depois" step="1"><p class="hint">O maior total vence. Empates ficam sem vencedor.</p></div>
+    {{else}}
+      <input type="hidden" name="attribute" value="dex"><input type="hidden" name="mode" value="initiative">
+    {{/if}}
+    <div class="form-group"><label>Modificador de ocasião</label><select name="occasion">{{#each occasions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+    <div class="form-group"><label>Outros modificadores</label><input type="number" name="extra" value="0" step="1"></div>
+    {{#if regularTest}}
+      <div class="form-group full-width"><label>Bônus de escala</label><select name="scale"><option value="none">Sem bônus de escala</option><option value="normal10">Normal: sobre-humano vs. tarefa humana (+10)</option><option value="opposed6">Oposto: uma escala acima do oponente (+6)</option><option value="opposed12">Oposto: divino vs. humano (+12)</option></select><p class="hint">Escolha com o mestre: a p.17 usa +6/+12 para opostos; a p.36 usa +10 para testes normais.</p></div>
+    {{/if}}
+  </div>
+  {{#if fixedBonus}}<p class="hint">Bônus já incluído: {{fixedBonus}} ({{#if isInitiative}}iniciativa e ajustes da ficha{{else}}arma{{/if}}).</p>{{/if}}
+  <fieldset class="roll-options"><legend>Recursos e contexto</legend>
+    {{#if regularTest}}<label><input type="checkbox" name="contextual"><span data-context-label>Aplicar bônus contextual do atributo</span></label>{{/if}}
+    <label><input type="checkbox" name="narrative" {{#unless canNarrative}}disabled{{/unless}}> Gastar 1 ponto narrativo · +1d6 ({{narrative}} disponíveis)</label>
+    <label><input type="checkbox" name="action" {{#unless canAction}}disabled{{/unless}}> Gastar 1 ponto de ação · +2d6 ({{action}} disponíveis)</label>
+    <p class="hint">Some todos os dados. Limites: um ponto narrativo por cena e um ponto de ação por combate.</p>
+    {{#if isPower}}<label><input type="checkbox" name="spendEnergy"> Descontar PE ao usar este poder ({{energy}} disponíveis)</label><div class="form-group"><label>Custo em PE</label><input type="number" name="energyCost" value="{{energyCost}}" min="0" step="1"></div>{{/if}}
+    {{#if isInitiative}}<label><input type="checkbox" name="updateInitiative" {{#if hasCombatant}}checked{{else}}disabled{{/if}}> Atualizar iniciativa no combate atual</label>{{#unless hasCombatant}}<p class="hint">Adicione o token ao combate para registrar a iniciativa.</p>{{/unless}}{{/if}}
+  </fieldset>
+  {{#if isSanity}}<fieldset class="roll-options"><legend>Sanidade</legend><p class="hint">Usa inicialmente o maior entre INT e SAB. Bônus atual pela sanidade: +{{sanityBonus}}.</p><div class="form-group"><label>Perda se falhar</label><input type="number" name="sanityLoss" value="1" min="1" max="6" step="1"></div><label><input type="checkbox" name="applySanity"> Descontar essa perda na ficha em caso de falha</label></fieldset>{{/if}}
+{{/if}}
+<div class="form-group"><label>Visibilidade</label><select name="messageMode">{{#each modes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+<output class="roll-preview" data-roll-preview>2d6</output>

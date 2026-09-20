@@ -1,0 +1,8 @@
+<article class="nitro2d6 roll-card">
+  <header class="roll-card-header"><span class="roll-kind">+2d6 · {{kindLabel}}</span><h3>{{label}}</h3></header>
+  <p class="roll-breakdown">{{breakdown}}</p>
+  {{{rollHTML}}}
+  <div class="roll-outcome {{outcome}}">{{outcomeLabel}}</div>
+  {{#if critical}}<p class="critical {{critical}}">{{criticalLabel}}</p>{{/if}}
+  {{#if notes}}<div class="roll-notes">{{#each notes}}<p>{{this}}</p>{{/each}}</div>{{/if}}
+</article>

@@ -1,0 +1,118 @@
+<div class="nitro-sheet-layout">
+  <header class="identity-header">
+    <img class="portrait" src="{{actor.img}}" data-action="editImage" data-edit="img" alt="Retrato de {{actor.name}}" title="Alterar retrato">
+    <div class="identity-main">
+      <div class="identity-topline"><span class="eyebrow">{{actorType}}</span><span class="system-wordmark">+2d6<span>RPG</span></span></div>
+      <input class="document-name" name="name" type="text" value="{{actor.name}}" placeholder="Nome do personagem" aria-label="Nome do personagem">
+      <input class="concept" name="system.details.concept" type="text" value="{{system.details.concept}}" placeholder="Conceito — quem é seu personagem?" aria-label="Conceito">
+      <div class="identity-details">
+        <label><span>Ocupação</span><input type="text" name="system.details.occupation" value="{{system.details.occupation}}" placeholder="O que você faz"></label>
+        <label><span>Origem / espécie</span><input type="text" name="system.details.ancestry" value="{{system.details.ancestry}}" placeholder="De onde você vem"></label>
+        {{#if isNPC}}<label class="challenge-field"><span>ND</span><input type="number" name="system.challenge" value="{{system.challenge}}" min="0" max="10" step="1" aria-label="Nível de desafio"></label>{{/if}}
+      </div>
+    </div>
+  </header>
+
+  <section class="attributes-strip" aria-label="Atributos">
+    {{#each attributes as |attribute|}}
+    <div class="attribute-card">
+      <button type="button" data-action="rollAttribute" data-attribute="{{attribute.key}}" title="Rolar {{attribute.label}}"><span class="attribute-abbreviation">{{attribute.abbreviation}}</span><i class="fa-solid fa-dice" inert></i></button>
+      <input type="number" name="system.attributes.{{attribute.key}}.value" value="{{attribute.value}}" aria-label="Valor de {{attribute.label}}" step="1">
+      <span class="attribute-label">{{attribute.label}}</span>
+    </div>
+    {{/each}}
+  </section>
+
+  <section class="resources-strip" aria-label="Recursos">
+    {{#each resources as |resource|}}
+    <div class="resource-card resource-{{resource.key}} {{#if resource.low}}depleted{{/if}}">
+      <div class="resource-heading"><span><i class="fa-solid {{resource.icon}}" inert></i> {{resource.label}}</span><span class="resource-abbreviation">{{resource.abbreviation}}</span></div>
+      <div class="resource-values">
+        <button class="icon-button" type="button" data-action="adjustResource" data-resource="{{resource.key}}" data-delta="-1" aria-label="Diminuir {{resource.label}}"><i class="fa-solid fa-minus" inert></i></button>
+        <input type="number" name="system.{{resource.key}}.value" value="{{resource.value}}" aria-label="{{resource.label}} atuais" step="1">
+        <span class="resource-slash">/</span>
+        {{#if resource.automatic}}<span class="resource-max" title="Máximo automático; configure na aba História">{{resource.max}}</span>{{else}}<input class="resource-max" type="number" name="system.{{resource.key}}.max" value="{{resource.max}}" min="0" step="1" aria-label="Máximo de {{resource.label}}">{{/if}}
+        <button class="icon-button" type="button" data-action="adjustResource" data-resource="{{resource.key}}" data-delta="1" aria-label="Aumentar {{resource.label}}"><i class="fa-solid fa-plus" inert></i></button>
+      </div>
+      <div class="resource-track"><span style="width: {{resource.percent}}%"></span></div>
+    </div>
+    {{/each}}
+    <div class="point-resources">
+      <label title="Pontos para influenciar a narrativa"><span><i class="fa-regular fa-star" inert></i> Narrativa</span><input type="number" name="system.narrative.value" value="{{system.narrative.value}}" min="0" aria-label="Pontos de narrativa"></label>
+      <label title="Pontos de ação"><span><i class="fa-solid fa-fire" inert></i> Ação</span><input type="number" name="system.action.value" value="{{system.action.value}}" min="0" aria-label="Pontos de ação"></label>
+    </div>
+  </section>
+
+  <nav class="sheet-tabs tabs" aria-label="Seções da ficha">
+    {{#each tabs as |tab|}}<button type="button" class="{{tab.cssClass}}" data-action="tab" data-group="{{tab.group}}" data-tab="{{tab.id}}"><i class="{{tab.icon}}" inert></i><span>{{tab.label}}</span></button>{{/each}}
+  </nav>
+
+  <main class="sheet-body">
+    <section class="tab {{tabs.tests.cssClass}}" data-group="sheet" data-tab="tests">
+      <div class="section-intro"><div><span class="eyebrow">O que você sabe fazer</span><h2>Perícias <span class="count">{{skillCount}}</span></h2></div><p>Clique no nome ou no dado para preparar um teste.</p></div>
+      <div class="skills-grid">
+        {{#each skillGroups as |group|}}
+        <section class="panel skill-panel">
+          <header class="panel-heading"><h3>{{group.label}}</h3>{{#if ../editable}}<button class="add-button" type="button" data-action="createItem" data-type="skill" data-category="{{group.key}}" title="Adicionar perícia: {{group.label}}"><i class="fa-solid fa-plus" inert></i> Perícia</button>{{/if}}</header>
+          {{> "systems/nitro2d6/templates/shared/item-list.hbs" items=group.items editable=../editable empty="Adicione uma perícia ou arraste uma para a ficha."}}
+        </section>
+        {{/each}}
+      </div>
+      <div class="reference-note"><i class="fa-regular fa-lightbulb" inert></i><span>Sem uma perícia? Clique no atributo acima. O diálogo permite ajustar a dificuldade e as condições do teste.</span></div>
+    </section>
+
+    <section class="tab {{tabs.combat.cssClass}}" data-group="sheet" data-tab="combat">
+      <div class="section-intro"><div><span class="eyebrow">Quando a ação começa</span><h2>Combate e resistência</h2></div></div>
+      <div class="combat-summary">
+        <button type="button" class="combat-stat" data-action="rollInitiative"><i class="fa-solid fa-bolt" inert></i><span>Iniciativa<strong>{{initiativeLabel}}</strong></span><i class="fa-solid fa-dice" inert></i></button>
+        <button type="button" class="combat-stat" data-action="rollDamage"><i class="fa-solid fa-hand-fist" inert></i><span>Dano de força<strong>{{system.strengthDamage}}</strong></span><i class="fa-solid fa-dice" inert></i></button>
+        <div class="combat-stat"><i class="fa-solid fa-shield-halved" inert></i><span>Redução de dano<strong>{{system.totalReduction}}</strong></span></div>
+      </div>
+      <section class="panel">
+        <header class="panel-heading"><h3><i class="fa-solid fa-crosshairs" inert></i> Armas e ataques</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="weapon"><i class="fa-solid fa-plus" inert></i> Arma</button>{{/if}}</header>
+        {{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.weapon editable=editable empty="Adicione uma arma para preparar ataques e rolar dano."}}
+      </section>
+      <section class="panel">
+        <header class="panel-heading"><h3><i class="fa-solid fa-shield-halved" inert></i> Proteção</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="armor"><i class="fa-solid fa-plus" inert></i> Armadura</button>{{/if}}</header>
+        {{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.armor editable=editable empty="Armaduras equipadas contribuem para a redução de dano."}}
+      </section>
+      <div class="two-columns">
+        <section class="panel endurance-panel"><header class="panel-heading"><h3>Sobrevivência</h3></header><div class="panel-content"><button type="button" class="secondary-button" data-action="rollDeath"><i class="fa-solid fa-heart-pulse" inert></i> Teste de morte</button><div class="form-grid"><label class="field"><span>Falhas acumuladas</span><input type="number" name="system.death.failures" value="{{system.death.failures}}" min="0" max="3"></label><label class="check-field"><input type="checkbox" name="system.death.stabilized" {{checked system.death.stabilized}}> Estabilizado</label></div>{{#if system.options.sanity}}<button type="button" class="secondary-button" data-action="rollSanity"><i class="fa-solid fa-brain" inert></i> Teste de sanidade</button>{{/if}}</div></section>
+        <section class="panel"><header class="panel-heading"><h3>Ajustes de combate</h3></header><div class="panel-content form-grid"><label class="field"><span>Modificador de iniciativa</span><input type="number" name="system.initiativeModifier" value="{{system.initiativeModifier}}" step="1"></label><label class="field"><span>RD natural / adicional</span><input type="number" name="system.damageReduction" value="{{system.damageReduction}}" min="0" step="1"></label><p class="hint full-width">A proteção usa a maior RD entre as armaduras equipadas, somada à RD adicional.</p></div></section>
+      </div>
+    </section>
+
+    <section class="tab {{tabs.abilities.cssClass}}" data-group="sheet" data-tab="abilities">
+      <div class="section-intro"><div><span class="eyebrow">O que torna você único</span><h2>Capacidades</h2></div></div>
+      <section class="panel"><header class="panel-heading"><h3><i class="fa-solid fa-star" inert></i> Vantagens</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="advantage"><i class="fa-solid fa-plus" inert></i> Vantagem</button>{{/if}}</header>{{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.advantage editable=editable empty="Talentos, dons e recursos especiais do personagem."}}</section>
+      <section class="panel"><header class="panel-heading"><h3><i class="fa-solid fa-link" inert></i> Desvantagens</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="disadvantage"><i class="fa-solid fa-plus" inert></i> Desvantagem</button>{{/if}}</header>{{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.disadvantage editable=editable empty="Limitações, compromissos e complicações do personagem."}}</section>
+      <section class="panel"><header class="panel-heading"><h3><i class="fa-solid fa-wand-magic-sparkles" inert></i> Poderes e magias</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="power"><i class="fa-solid fa-plus" inert></i> Poder / magia</button>{{/if}}</header>{{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.power editable=editable empty="Adicione capacidades sobrenaturais, se usadas na sua campanha."}}</section>
+    </section>
+
+    <section class="tab {{tabs.equipment.cssClass}}" data-group="sheet" data-tab="equipment">
+      <div class="section-intro"><div><span class="eyebrow">Tudo o que você carrega</span><h2>Equipamento</h2></div><span class="weight-total"><i class="fa-solid fa-weight-hanging" inert></i> {{system.totalWeight}} kg</span></div>
+      <section class="panel"><header class="panel-heading"><h3>Inventário</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="equipment"><i class="fa-solid fa-plus" inert></i> Equipamento</button>{{/if}}</header>{{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.equipment editable=editable empty="Adicione ferramentas, consumíveis e outros pertences."}}</section>
+      <section class="panel"><header class="panel-heading"><h3>Armas</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="weapon"><i class="fa-solid fa-plus" inert></i> Arma</button>{{/if}}</header>{{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.weapon editable=editable empty="Nenhuma arma no inventário."}}</section>
+      <section class="panel"><header class="panel-heading"><h3>Armaduras</h3>{{#if editable}}<button class="add-button" type="button" data-action="createItem" data-type="armor"><i class="fa-solid fa-plus" inert></i> Armadura</button>{{/if}}</header>{{> "systems/nitro2d6/templates/shared/item-list.hbs" items=groups.armor editable=editable empty="Nenhuma armadura no inventário."}}</section>
+      <div class="reference-note"><i class="fa-solid fa-shirt" inert></i><span>O ícone de vestimenta indica itens equipados. Edite o item para ajustar quantidade, peso, preço e descrição.</span></div>
+    </section>
+
+    <section class="tab {{tabs.story.cssClass}}" data-group="sheet" data-tab="story">
+      <div class="section-intro"><div><span class="eyebrow">Além dos números</span><h2>História e evolução</h2></div><span class="points-total">{{pointsRemaining}} <small>pontos disponíveis</small></span></div>
+      <div class="form-grid story-fields"><label class="field"><span>Idade</span><input type="text" name="system.details.age" value="{{system.details.age}}"></label><label class="field"><span>Pontos recebidos</span><input type="number" name="system.points.earned" value="{{system.points.earned}}" min="0"></label><label class="field"><span>Pontos gastos</span><input type="number" name="system.points.spent" value="{{system.points.spent}}" min="0"></label></div>
+      <label class="field"><span>Aparência</span><textarea name="system.details.appearance" rows="2" placeholder="Traços, roupas e sinais marcantes">{{system.details.appearance}}</textarea></label>
+      <section class="panel biography-panel"><header class="panel-heading"><h3>História, vínculos e motivações</h3></header><prose-mirror name="system.biography" data-document-uuid="{{actor.uuid}}" value="{{system.biography}}" toggled {{#unless editable}}disabled{{/unless}}>{{{enrichedBiography}}}</prose-mirror></section>
+      <label class="field"><span>Anotações</span><textarea name="system.details.notes" rows="3" placeholder="Pistas, objetivos e lembretes da sessão">{{system.details.notes}}</textarea></label>
+      <details class="sheet-settings"><summary><i class="fa-solid fa-sliders" inert></i> Configuração da ficha <span>Regras opcionais e recursos</span></summary><div class="settings-content">
+        <div class="option-toggles"><label class="check-field"><input type="checkbox" name="system.options.power" {{checked system.options.power}}> Atributo Poder</label><label class="check-field"><input type="checkbox" name="system.options.sanity" {{checked system.options.sanity}}> Sanidade</label><label class="check-field"><input type="checkbox" name="system.options.heroic" {{checked system.options.heroic}}> Campanha heroica (+10 PV/SAN)</label></div>
+        <p class="hint">Desative o cálculo automático para definir o máximo diretamente no recurso. Os valores atuais são controlados durante o jogo.</p>
+        <div class="resource-settings-grid">
+          <div class="resource-setting"><h4>Pontos de vida</h4><label class="check-field"><input type="checkbox" name="system.health.automatic" {{checked system.health.automatic}}> Máximo automático</label><label class="field"><span>PV base</span><input type="number" name="system.health.base" value="{{system.health.base}}" min="0"></label><label class="field"><span>Bônus de PV</span><input type="number" name="system.health.bonus" value="{{system.health.bonus}}"></label></div>
+          <div class="resource-setting"><h4>Energia / Mana</h4><label class="check-field"><input type="checkbox" name="system.energy.automatic" {{checked system.energy.automatic}}> Máximo automático</label><label class="field"><span>Bônus de PE</span><input type="number" name="system.energy.bonus" value="{{system.energy.bonus}}"></label><p class="hint">Use o bônus para capacidades que alteram a reserva.</p></div>
+          {{#if system.options.sanity}}<div class="resource-setting"><h4>Sanidade</h4><label class="check-field"><input type="checkbox" name="system.sanity.automatic" {{checked system.sanity.automatic}}> Máximo automático</label><label class="field"><span>Bônus de SAN</span><input type="number" name="system.sanity.bonus" value="{{system.sanity.bonus}}"></label><p class="hint">O cálculo inclui a maior perícia marcada como acadêmica.</p></div>{{/if}}
+        </div>
+      </div></details>
+    </section>
+  </main>
+  <footer class="sheet-footer"><span>+2d6 · Tio Nitro</span><span>2d6 + atributo + perícia</span><span>Alterações salvas automaticamente</span></footer>
+</div>

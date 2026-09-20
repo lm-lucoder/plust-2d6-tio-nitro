@@ -1,0 +1,57 @@
+<div class="nitro-sheet-layout">
+  <header class="identity-header item-identity">
+    <img class="portrait" src="{{item.img}}" data-action="editImage" data-edit="img" alt="Ícone de {{item.name}}" title="Alterar imagem">
+    <div class="identity-main"><div class="identity-topline"><span class="eyebrow">{{typeLabel}}</span><span class="system-wordmark">+2d6</span></div><input class="document-name" type="text" name="name" value="{{item.name}}" aria-label="Nome do item" placeholder="Nome"><p class="item-owner">{{#if item.actor}}Na ficha de <strong>{{item.actor.name}}</strong>{{else}}Pronto para adicionar à ficha de um personagem{{/if}}</p></div>
+  </header>
+  <nav class="sheet-tabs tabs" aria-label="Seções do item">{{#each tabs as |tab|}}<button type="button" class="{{tab.cssClass}}" data-action="tab" data-group="{{tab.group}}" data-tab="{{tab.id}}"><i class="{{tab.icon}}" inert></i><span>{{tab.label}}</span></button>{{/each}}</nav>
+  <main class="sheet-body">
+    <section class="tab {{tabs.details.cssClass}}" data-group="sheet" data-tab="details">
+      {{#if canRoll}}<div class="item-roll-actions"><button type="button" class="primary-button" data-action="rollItem"><i class="fa-solid fa-dice" inert></i> {{#if isWeapon}}Preparar ataque{{else}}Preparar teste{{/if}}</button>{{#if hasDamage}}<button type="button" class="secondary-button" data-action="rollDamage"><i class="fa-solid fa-burst" inert></i> Rolar dano</button>{{/if}}</div>{{/if}}
+      <div class="form-grid">
+        {{#if hasAttribute}}<label class="field"><span>Atributo do teste</span><select name="system.attribute">{{selectOptions config.attributes selected=system.attribute}}</select></label>{{/if}}
+        {{#if isSkill}}
+          <label class="field"><span>Graduação</span><input type="number" name="system.rank" value="{{system.rank}}" min="0" step="1"></label>
+          <label class="field"><span>Categoria</span><select name="system.category">{{selectOptions config.skillCategories selected=system.category}}</select></label>
+          <label class="field"><span>Especialização</span><input type="text" name="system.specialization" value="{{system.specialization}}" placeholder="Opcional"></label>
+          <label class="check-field full-width"><input type="checkbox" name="system.academic" {{checked system.academic}}> Perícia acadêmica — contribui para a sanidade</label>
+          <p class="hint full-width">A graduação é somada ao atributo. O atributo pode ser alterado no diálogo quando a situação pedir.</p>
+        {{/if}}
+        {{#if isWeapon}}
+          <label class="field"><span>Perícia usada</span><input type="text" name="system.skill" value="{{system.skill}}" list="{{rootId}}-skills" placeholder="Nome da perícia"><datalist id="{{rootId}}-skills">{{#each skillNames as |skill|}}<option value="{{skill}}"></option>{{/each}}</datalist></label>
+          <label class="field"><span>Bônus do ataque</span><input type="number" name="system.bonus" value="{{system.bonus}}" step="1"></label>
+          <label class="field"><span>Modificador de iniciativa</span><input type="number" name="system.initiativeModifier" value="{{system.initiativeModifier}}" step="1"></label>
+          <p class="hint full-width">A perícia é encontrada pelo nome na ficha. Quando usar esta arma, aplique seu modificador de iniciativa em Ajustes de combate.</p>
+        {{/if}}
+        {{#if isArmor}}<label class="field"><span>Redução de dano (RD)</span><input type="number" name="system.reduction" value="{{system.reduction}}" min="0" step="1"></label><p class="hint">Quando equipada, a armadura contribui para a proteção do personagem.</p>{{/if}}
+        {{#if isEquipment}}<label class="field"><span>Bônus de equipamento</span><input type="number" name="system.bonus" value="{{system.bonus}}" step="1"></label><p class="hint">Informe este bônus no teste em que o equipamento ajudar.</p>{{/if}}
+        {{#if isTrait}}
+          <label class="field"><span>{{#if isDisadvantage}}Pontos concedidos{{else}}Custo em pontos{{/if}}</span><input type="number" name="system.cost" value="{{system.cost}}" min="0" step="1"></label>
+          <label class="check-field full-width"><input type="checkbox" name="system.rollable" {{checked system.rollable}}> Esta capacidade permite um teste</label>
+          {{#if system.rollable}}<label class="field"><span>Graduação / bônus do teste</span><input type="number" name="system.rank" value="{{system.rank}}" step="1"></label>{{/if}}
+        {{/if}}
+        {{#if isPower}}
+          <label class="field"><span>Tipo de capacidade</span><select name="system.category">{{selectOptions powerCategories selected=system.category}}</select></label>
+          <label class="field"><span>Graduação</span><input type="number" name="system.rank" value="{{system.rank}}" min="0" step="1"></label>
+          <label class="field"><span>Custo de energia / mana</span><input type="number" name="system.energyCost" value="{{system.energyCost}}" min="0" step="1"></label>
+          <label class="field"><span>Duração</span><input type="text" name="system.duration" value="{{system.duration}}" placeholder="Ex.: instantânea"></label>
+          <label class="field"><span>Área de efeito</span><input type="text" name="system.area" value="{{system.area}}" placeholder="Ex.: um alvo"></label>
+        {{/if}}
+        {{#if hasDamage}}
+          <label class="field"><span>Fórmula de dano</span><input class="formula-input" type="text" name="system.damage" value="{{system.damage}}" placeholder="Ex.: 1d6 ou @strengthDamage + 1"></label>
+          <label class="field"><span>Tipo de dano</span><select name="system.damageType">{{selectOptions config.damageTypes selected=system.damageType}}</select></label>
+          <label class="field full-width"><span>Alcance</span><input type="text" name="system.range" value="{{system.range}}" placeholder="Ex.: corpo a corpo, 10 m"></label>
+          <p class="hint full-width">Use <code>@strengthDamage</code> para o dano de Força do personagem. A rolagem de dano permite informar a RD do alvo.</p>
+        {{/if}}
+      </div>
+      {{#if isPhysical}}<section class="panel item-inventory"><header class="panel-heading"><h3>Inventário</h3><label class="check-field"><input type="checkbox" name="system.equipped" {{checked system.equipped}}> Equipado</label></header><div class="panel-content form-grid">
+        <label class="field"><span>Quantidade</span><input type="number" name="system.quantity" value="{{system.quantity}}" min="0" step="1"></label>
+        <label class="field"><span>Peso unitário (kg)</span><input type="number" name="system.weight" value="{{system.weight}}" min="0" step="0.01"></label>
+        <label class="field full-width"><span>Preço / valor</span><input type="text" name="system.price" value="{{system.price}}" placeholder="Conforme a moeda da campanha"></label>
+        {{#if isWeapon}}<label class="field"><span>Munição atual</span><input type="number" name="system.ammunition.value" value="{{system.ammunition.value}}" min="0" step="1"></label><label class="field"><span>Capacidade de munição</span><input type="number" name="system.ammunition.max" value="{{system.ammunition.max}}" min="0" step="1"></label>{{/if}}
+      </div></section>{{/if}}
+      <label class="field source-field"><span>Fonte / referência</span><input type="text" name="system.source" value="{{system.source}}" placeholder="Livro, página ou anotação da campanha"></label>
+    </section>
+    <section class="tab {{tabs.description.cssClass}}" data-group="sheet" data-tab="description"><div class="section-intro"><div><span class="eyebrow">{{typeLabel}}</span><h2>Descrição e efeitos</h2></div></div><p class="hint">Registre o funcionamento, condições de uso e detalhes desta capacidade ou objeto.</p><prose-mirror name="system.description" data-document-uuid="{{item.uuid}}" value="{{system.description}}" toggled {{#unless editable}}disabled{{/unless}}>{{{enrichedDescription}}}</prose-mirror></section>
+  </main>
+  <footer class="sheet-footer"><span>+2d6 · {{typeLabel}}</span><span>Alterações salvas automaticamente</span></footer>
+</div>

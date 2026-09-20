@@ -1,0 +1,20 @@
+<ol class="item-list">
+  {{#each items as |entry|}}
+  <li class="item-row draggable" data-item-id="{{entry.id}}" draggable="true">
+    <img class="item-icon" src="{{entry.img}}" alt="" loading="lazy">
+    <button type="button" class="item-name" data-action="{{#if entry.canRoll}}rollItem{{else}}editItem{{/if}}" title="{{#if entry.canRoll}}Rolar {{entry.name}}{{else}}Abrir {{entry.name}}{{/if}}">
+      <strong>{{entry.name}}</strong><small>{{entry.subtitle}}</small>
+    </button>
+    <div class="item-badges">{{#each entry.badges as |badge|}}<span class="badge">{{badge}}</span>{{/each}}</div>
+    <div class="item-controls">
+      {{#if entry.physical}}<button type="button" class="icon-button {{#if entry.system.equipped}}equipped{{/if}}" data-action="toggleEquipped" title="{{#if entry.system.equipped}}Equipado; clique para guardar{{else}}Guardado; clique para equipar{{/if}}" aria-label="Alternar equipamento" aria-pressed="{{entry.system.equipped}}"><i class="fa-solid fa-shirt" inert></i></button>{{/if}}
+      {{#if entry.canRoll}}<button type="button" class="icon-button roll-button" data-action="rollItem" title="Rolar {{entry.name}}" aria-label="Rolar {{entry.name}}"><i class="fa-solid fa-dice" inert></i></button>{{/if}}
+      {{#if entry.canDamage}}<button type="button" class="icon-button" data-action="rollDamage" title="Rolar dano de {{entry.name}}" aria-label="Rolar dano de {{entry.name}}"><i class="fa-solid fa-burst" inert></i></button>{{/if}}
+      <button type="button" class="icon-button" data-action="editItem" title="Editar {{entry.name}}" aria-label="Editar {{entry.name}}"><i class="fa-solid fa-pen" inert></i></button>
+      {{#if ../editable}}<button type="button" class="icon-button delete-button" data-action="deleteItem" title="Remover {{entry.name}}" aria-label="Remover {{entry.name}}"><i class="fa-solid fa-trash" inert></i></button>{{/if}}
+    </div>
+  </li>
+  {{else}}
+  <li class="empty-state"><i class="fa-solid fa-plus" inert></i><span>{{empty}}</span></li>
+  {{/each}}
+</ol>

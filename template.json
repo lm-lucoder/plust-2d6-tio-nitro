@@ -1,0 +1,5 @@
+{
+  "Actor": {"types": ["character", "npc"], "character": {}, "npc": {}},
+  "Item": {"types": ["skill", "weapon", "armor", "equipment", "advantage", "disadvantage", "power"],
+    "skill": {}, "weapon": {}, "armor": {}, "equipment": {}, "advantage": {}, "disadvantage": {}, "power": {}}
+}
