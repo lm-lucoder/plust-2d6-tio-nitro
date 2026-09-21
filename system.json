@@ -37,8 +37,22 @@
       "path": "lang/pt-BR.json"
     }
   ],
-  "packs": [],
-  "packFolders": [],
+  "packs": [
+    {
+      "name": "itens",
+      "label": "Itens +2d6",
+      "path": "packs/itens",
+      "type": "Item",
+      "system": "nitro2d6"
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "+2d6",
+      "color": "#a0462e",
+      "packs": ["itens"]
+    }
+  ],
   "socket": false,
   "background": "systems/nitro2d6/assets/anvil-impact.png",
   "gridDistance": 1,

@@ -1,6 +1,6 @@
 # +2d6 • Nitro para Foundry VTT 14
 
-Implementação das fichas e rolagens do +2d6, baseada no manual de Newton “Tio Nitro” Rocha em `docs/+2d6 tio nitro.pdf`. Não inclui compêndios.
+Implementação das fichas e rolagens do +2d6, baseada no manual de Newton “Tio Nitro” Rocha em `docs/+2d6 tio nitro.pdf`. Os packs ainda não são instalados automaticamente, mas o catálogo-fonte para gerá-los está incluído.
 
 ## Começar
 
@@ -40,6 +40,23 @@ await actor.createEmbeddedDocuments('Item', [{
 ```
 
 Atributos: `str`, `dex`, `con`, `int`, `wis`, `cha`, `pow`, cada um em `system.attributes.<chave>.value`. Recursos na raiz: `system.health`, `system.energy`, `system.sanity`, `system.narrative` e `system.action`. Não existe um nível intermediário `system.resources`.
+
+## Catálogo-fonte de compêndios
+
+[`nitro2d6-content.json`](nitro2d6-content.json) reúne o conteúdo extraído do livro para a futura integração. Cada entrada em `packs[].documents` já é uma fonte nativa do Foundry VTT 14: `Item`, `Actor` ou `JournalEntry`. O manifesto externo apenas separa os packs por categoria.
+
+- Perícias, vantagens, desvantagens, armas, armaduras, equipamentos, poderes e magias são fontes de `Item` com os campos de `system` definidos em `module/data.mjs`.
+- PdMs e criaturas possuem fontes de `Actor` tipo `npc`, com suas armas, armaduras, perícias e habilidades como Items incorporados.
+- Regras e tabelas que não são entidades jogáveis são fontes de `JournalEntry`; o catálogo também inclui uma página que abre o PDF original.
+- Informações impressas que não cabem no schema atual, como tipos específicos de dano, alternativas de atributo, custos por graduação e observações de OCR, permanecem em `flags.nitro2d6.content`.
+
+O futuro importador deve percorrer cada pack e chamar a criação do `documentName` informado; não deve enviar o objeto do catálogo inteiro ao Foundry.
+
+## Importar o catálogo no mundo
+
+O arquivo [`macros/import-nitro2d6-content.js`](macros/import-nitro2d6-content.js) é uma Macro do tipo **Script** para Foundry VTT 14. No diretório de macros do Foundry, crie uma macro, cole o conteúdo desse arquivo e execute-a como Mestre. O diálogo solicita o JSON; cole nele o conteúdo completo de [`nitro2d6-content.json`](nitro2d6-content.json) e confirme.
+
+A macro cria as pastas-raiz `+2d6 — Itens`, `+2d6 — Atores` e `+2d6 — Referências`, com uma subpasta para cada categoria do catálogo, e cria os documentos dentro delas. Cada documento recebe uma marca de importação em `flags.nitro2d6.import`; assim, executar a mesma importação novamente ignora os documentos já criados, sem duplicá-los.
 
 ## Rolagens e decisões das regras
 
